@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.aa.calldefender.MainActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="38dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/logo" />
+
+        <Button
+            android:id="@+id/button_start"
+            style="@android:style/Widget.DeviceDefault.Light.Button.Inset"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/button_instructions"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="20dp"
+            android:text="START" />
+
+        <Button
+            android:id="@+id/button_instructions"
+            style="@android:style/Widget.DeviceDefault.Light.Button.Inset"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/button_exit"
+            android:layout_alignEnd="@+id/button_start"
+            android:layout_alignParentEnd="false"
+            android:layout_alignStart="@+id/button_start"
+            android:text="INSTRUCTIONS" />
+
+        <Button
+            android:id="@+id/button_exit"
+            style="@android:style/Widget.DeviceDefault.Light.Button.Inset"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/button_instructions"
+            android:layout_alignParentBottom="true"
+            android:layout_alignStart="@+id/button_instructions"
+            android:layout_marginBottom="48dp"
+            android:text="EXIT" />
+
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>
