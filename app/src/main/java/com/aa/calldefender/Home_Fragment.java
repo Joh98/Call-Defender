@@ -35,14 +35,14 @@ public class Home_Fragment extends Fragment {
 
     Home enable_disable = new Home();
     CardView card_view;
-    boolean on;
-    boolean block_all;
+
 
     private GestureDetector mDetector;
 
     SharedPreferences sharedPref;
     SharedPreferences.Editor editor;
-
+    boolean on;
+    boolean block_all;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -55,9 +55,7 @@ public class Home_Fragment extends Fragment {
         frameLayoutBalance.setBackgroundColor(Color.parseColor("#f9f9f9"));
         on = sharedPref.getBoolean("on", false);
         block_all = sharedPref.getBoolean("block_all", false);
-
-
-
+        editor = sharedPref.edit();
 
 
         card_view = (CardView) view.findViewById(R.id.card_1);
@@ -71,10 +69,7 @@ public class Home_Fragment extends Fragment {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     card_view.setCardElevation(40);
                     card_view.setCardBackgroundColor(Color.parseColor("#F5F5F5"));
-                }
-
-                else if (event.getAction() == MotionEvent.ACTION_UP)
-                {
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     card_view.setCardElevation(20);
                     card_view.setCardBackgroundColor(Color.parseColor("#FFFFFF"));
                 }
@@ -90,60 +85,25 @@ public class Home_Fragment extends Fragment {
         return view;
     }
 
-    public void checkCallPermission(int id) {
+    public void checkCallPermission() {
 
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.PROCESS_OUTGOING_CALLS, Manifest.permission.CALL_PHONE, Manifest.permission.READ_CALL_LOG, Manifest.permission.WRITE_CALL_LOG}, id);
-        }
+       requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.PROCESS_OUTGOING_CALLS, Manifest.permission.CALL_PHONE, Manifest.permission.READ_CALL_LOG, Manifest.permission.WRITE_CALL_LOG}, 1);
+
     }
 
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
-        editor = sharedPref.edit();
-        switch (requestCode){
-            case 1:
-                if (grantResults[0] != PackageManager.PERMISSION_GRANTED)
-                {
-                    enable_disable.disableBroadcastReceiver(getActivity().getApplicationContext());
-                    editor.putBoolean("on", false);
-                    editor.apply();
-                    editor.putBoolean("block_all", false);
-                    editor.apply();
-
+                if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(getActivity(), "Insufficient permissions... call blocking DISABLED!",
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getActivity(), "Permissions granted, you can now enable call blocking!",
+                            Toast.LENGTH_LONG).show();
                 }
 
-                else
-                {
-                    enable_disable.enableBroadcastReceiver(getActivity().getApplicationContext());
-                    editor.putBoolean("on", true);
-                    editor.apply();
-                }
-
-                case 2:
-
-                if (grantResults[0] != PackageManager.PERMISSION_GRANTED)
-                {
-                    enable_disable.disableBroadcastReceiver(getActivity().getApplicationContext());
-                    editor.putBoolean("on", false);
-                    editor.apply();
-                    editor.putBoolean("block_all", false);
-                    editor.apply();
-
-                }
-
-                else
-                {
-                    enable_disable.enableBroadcastReceiver(getActivity().getApplicationContext());
-                    editor.putBoolean("on", true);
-                    editor.apply();
-                    editor.putBoolean("block_all", true);
-                    editor.apply();
-
-                }
-
-        };
     }
-
 
 
     class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
@@ -152,15 +112,27 @@ public class Home_Fragment extends Fragment {
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
 
+
             on = sharedPref.getBoolean("on", false);
+            block_all = sharedPref.getBoolean("block_all", false);
 
-            if (!on) {
+            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) { //If incorrect permissions ask user for pemissions
 
-                checkCallPermission(1);
+                checkCallPermission();
+            }
+
+            else if (!on) { // If call blocking isn't on, turn it on
+                enable_disable.enableBroadcastReceiver(getActivity().getApplicationContext());
+                editor.putBoolean("on", true);
+                editor.apply();
                 Toast.makeText(getActivity(), "ON!",
                         Toast.LENGTH_SHORT).show();
+            } else { //Else turn call blocking off
 
-            } else {
+                enable_disable.disableBroadcastReceiver(getActivity().getApplicationContext());
+                editor.putBoolean("on", false);
+                editor.putBoolean("block_all", false);
+                editor.apply();
 
                 Toast.makeText(getActivity(), "OFF!",
                         Toast.LENGTH_SHORT).show();
@@ -173,18 +145,46 @@ public class Home_Fragment extends Fragment {
         public void onLongPress(MotionEvent e) {
 
             on = sharedPref.getBoolean("on", false);
+            block_all = sharedPref.getBoolean("block_all", false);
 
-            if (!on) {
-                checkCallPermission(2);
+            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) { //If call blocking isn't on and there are no permissions
+
+                checkCallPermission(); //Check for permissions
             }
 
-            Toast.makeText(getActivity(), "ALL!",
-                    Toast.LENGTH_SHORT).show();
+            else if (!on) { //Else if there are already permissions and call blocking isn't on, block all numbers
+                enable_disable.enableBroadcastReceiver(getActivity().getApplicationContext());
+                editor.putBoolean("on", true);
+                editor.apply();
+                editor.putBoolean("block_all", true);
+                editor.apply();
+                Toast.makeText(getActivity(), "ALL!",
+                        Toast.LENGTH_SHORT).show();
+            }
+
+            else if (on && !block_all) {
+
+                enable_disable.enableBroadcastReceiver(getActivity().getApplicationContext());
+                editor.putBoolean("on", true);
+                editor.apply();
+                editor.putBoolean("block_all", true);
+                editor.apply();
+                Toast.makeText(getActivity(), "ALL!",
+                        Toast.LENGTH_SHORT).show();
+            }
+
+            else {
+                enable_disable.disableBroadcastReceiver(getActivity().getApplicationContext());
+                editor.putBoolean("on", false);
+                editor.apply();
+                editor.putBoolean("block_all", false);
+                editor.apply();
+                Toast.makeText(getActivity(), "OFF!",
+                        Toast.LENGTH_SHORT).show();
+            }
+
 
         }
-
-
-
     }
 }
 
