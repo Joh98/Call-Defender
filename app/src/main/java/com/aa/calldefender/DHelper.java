@@ -95,7 +95,7 @@ public class DHelper extends SQLiteOpenHelper {
         }
     }
 
-    void delete_from_db(String id_value, int identifier){
+    String delete_from_db(String id_value, int identifier){
 
         SQLiteDatabase database = this.getWritableDatabase();
         if (identifier == 1)
@@ -108,6 +108,8 @@ public class DHelper extends SQLiteOpenHelper {
         {
             database.delete(T_NAME_2, ID_2 + "=" + id_value, null);
         }
+
+        return "Data Deleted";
 
     }
 

@@ -33,64 +33,39 @@ import java.lang.reflect.Method;
 
 public class CallInterceptor extends BroadcastReceiver {
 
+    boolean num_exist;
+    SmsManager smsManager = SmsManager.getDefault();
+
+    String incomingNumber;
+    String state;
+    DHelper database;
+    SharedPreferences sharedPref;
+    boolean sms;
+    boolean call_deletion;
+    boolean block_switch;
+    Context context;
+
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        SmsManager smsManager = SmsManager.getDefault();
+        incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+        database = new DHelper(context);
+        state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
+        this.context = context;
+        sharedPref = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
+        sms = sharedPref.getBoolean("sms", false);
+        call_deletion = sharedPref.getBoolean("call_del", false);
+        block_switch = sharedPref.getBoolean("block_all", false);
 
-        String incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
-        String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
-        Log.d("Database Helper", "Phone No = " + incomingNumber);
-        DHelper database = new DHelper(context);
+        new BackgroundNumberExist(context, this).execute(incomingNumber);
 
-
-
-        SharedPreferences sharedPref = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
-        boolean sms = sharedPref.getBoolean("sms", false);
-        boolean call_deletion = sharedPref.getBoolean("call_del", false);
-        boolean block_switch = sharedPref.getBoolean("block_all", false);
-
-
-        if (state.equals(TelephonyManager.EXTRA_STATE_RINGING) && !block_switch) {
-
-            if (database.area_code_exist(incomingNumber, 1) || database.num_exist(incomingNumber)) {
-                block_call(context);
-
-                if (sms) {
-                    smsManager.sendTextMessage(incomingNumber, null, "test", null, null);
-                }
-
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                if (call_deletion){
-                    context.getContentResolver().delete(CallLog.Calls.CONTENT_URI, "NUMBER=" + "'"+ incomingNumber +"'", null);
-                }
-            }
-        }
-
-        else if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
-
-            block_call(context);
-
-            if (sms) {
-                smsManager.sendTextMessage(incomingNumber, null, "test", null, null);
-            }
-
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            if (call_deletion){
-                context.getContentResolver().delete(CallLog.Calls.CONTENT_URI, "NUMBER=" + "'"+ incomingNumber +"'", null);
-            }
-        }
     }
+
+    public void test()
+
+    {
+
+}
 
 public void block_call(Context context) {
     try {
@@ -118,6 +93,62 @@ public void block_call(Context context) {
     catch (Exception e) {
         e.printStackTrace();
     }
+}
+
+public void exist(boolean number){
+
+        num_exist = number;
+
+    if (state.equals(TelephonyManager.EXTRA_STATE_RINGING) && !block_switch) {
+
+        if (num_exist) {
+            block_call(context);
+
+            if (sms) {
+                smsManager.sendTextMessage(incomingNumber, null, "test", null, null);
+            }
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            if (call_deletion) {
+                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+                context.getContentResolver().delete(CallLog.Calls.CONTENT_URI, "NUMBER=" + "'" + incomingNumber + "'", null);
+            }
+        }
+    }
+
+    else if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
+
+        block_call(context);
+
+        if (sms) {
+            smsManager.sendTextMessage(incomingNumber, null, "test", null, null);
+        }
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        if (call_deletion){
+            context.getContentResolver().delete(CallLog.Calls.CONTENT_URI, "NUMBER=" + "'"+ incomingNumber +"'", null);
+        }
+    }
+
 }
 
 }

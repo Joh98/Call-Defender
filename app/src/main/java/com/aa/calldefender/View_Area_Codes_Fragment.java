@@ -30,34 +30,18 @@ public class View_Area_Codes_Fragment extends Fragment {
     DHelper data;
     Button button;
     android.support.v7.app.AlertDialog.Builder builder;
-    BackgroundDBTasks BackgroundTask = null;
+    String num_number,num_id;
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view =  inflater.inflate(R.layout.fragment_view_area_codes, null);
         data = new DHelper(getActivity().getApplicationContext());
-        BackgroundTask = new BackgroundDBTasks(getActivity().getApplicationContext());
+        new BackgroundReadFromAreaCodeTable(getActivity().getApplicationContext(), this).execute("2");
 
-        result = data.getData(2);
 
         a = (ListView)view.findViewById(R.id.list);
         button = (Button)view.findViewById(R.id.button2);
 
-
-        if(result.getCount() <= 0){
-            Toast.makeText(getActivity(), "NO BLOCKED AREA CODES EXIST!",
-                    Toast.LENGTH_SHORT).show();
-        }
-        else {
-            while (result.moveToNext()) {
-
-                num_list.add(result.getString(1));
-                ListAdapter l_adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, num_list);
-                a.setAdapter(l_adapter);
-
-            }
-
-        }
 
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -76,10 +60,9 @@ public class View_Area_Codes_Fragment extends Fragment {
 
                 result.moveToPosition(i); //Set position of the row to that clicked on
                 Integer row_id = result.getInt(column_id); //Get ID of the selected row
-                Integer row_number = result.getInt(column_number); //Get phone number of the selected row
-                String num_id = row_id.toString();
-                String num_number = row_number.toString();
-                alert(num_number, num_id);
+                num_number = result.getString(column_number);
+                num_id = row_id.toString();
+                alert();
             }
         });
 
@@ -88,24 +71,49 @@ public class View_Area_Codes_Fragment extends Fragment {
 
     public void re_display()
     {
-        FragmentTransaction refresh = getFragmentManager().beginTransaction();
-        refresh.replace(R.id.content, new View_Area_Codes_Fragment());
-        refresh.commit();
+
+        new BackgroundReadFromAreaCodeTable(getActivity().getApplicationContext(), this).execute("2");
+
     }
 
-    public void alert(final String num_number, final String num_id)
+    private void runDelete()
+    {
+        new BackgroundDeleteFromAreaCodeTable(getActivity().getApplicationContext(), this).execute(num_id,"2");
+    }
+
+
+    public void alert()
     {
         builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
         builder.setMessage("Blocked Area Code: " + num_number);
         builder.setCancelable(false);
         builder.setNegativeButton("Unblock", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                BackgroundTask.execute("delete", num_id, String.valueOf(2));
-                re_display();
+               runDelete();
             }
         });
         builder.setPositiveButton("Cancel", null);
         builder.show();
     }
 
+    public void show_data(Cursor data)
+    {
+        num_list.clear();
+        if(data.getCount() <= 0){
+            Toast.makeText(getActivity(), "NO BLOCKED AREA CODES EXIST!",
+                    Toast.LENGTH_SHORT).show();
+        }
+        else {
+            while (data.moveToNext()) {
+
+                num_list.add(data.getString(1));
+            }
+
+        }
+
+        ListAdapter l_adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, num_list);
+        a.setAdapter(l_adapter);
+
+        result = data;
+    }
 }

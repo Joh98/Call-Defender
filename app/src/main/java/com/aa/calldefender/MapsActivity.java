@@ -18,7 +18,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     String num;
-    DHelper data;
     List result;
 
     @Override
@@ -47,15 +46,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        data = new DHelper(this);
-        result = data.getAreaCodeForMap(num);
-       String area_code = (String) result.get(0);
-       Float lo = Float.parseFloat((String) result.get(1));
-       Float la = Float.parseFloat((String) result.get(2));
-       String title = (String) result.get(3);
+        new BackgroundReadForMap(this).execute(num);
 
-       LatLng location = new LatLng(la, lo);
-       mMap.addMarker(new MarkerOptions().position(location).title("Approx location is " + title + " (" + area_code +")")).showInfoWindow();;
+    }
+
+    public void show_Map(List data)
+    {
+        result = data;
+
+        String area_code = (String) result.get(0);
+        Float lo = Float.parseFloat((String) result.get(1));
+        Float la = Float.parseFloat((String) result.get(2));
+        String title = (String) result.get(3);
+
+        LatLng location = new LatLng(la, lo);
+        mMap.addMarker(new MarkerOptions().position(location).title("Approx location is " + title + " (" + area_code +")")).showInfoWindow();;
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 8.0f));
     }
 }

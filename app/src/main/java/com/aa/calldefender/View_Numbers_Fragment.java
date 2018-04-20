@@ -1,14 +1,12 @@
 package com.aa.calldefender;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,34 +31,18 @@ public class View_Numbers_Fragment extends Fragment {
     DHelper data;
     android.support.v7.app.AlertDialog.Builder builder;
     Button button;
-    BackgroundDBTasks BackgroundTask = null;
+    Boolean exist;
+    String num_number,num_id;
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view =  inflater.inflate(R.layout.fragment_view_numbers, null);
         data = new DHelper(getActivity().getApplicationContext());
 
-        result = data.getData(1);
-        BackgroundTask = new BackgroundDBTasks(getActivity().getApplicationContext());
+        new BackgroundReadFromNumberTable(getActivity().getApplicationContext(), this).execute("1");
 
         a = (ListView)view.findViewById(R.id.list);
         button = (Button)view.findViewById(R.id.button_change);
-
-
-        if(result.getCount() <= 0){
-            Toast.makeText(getActivity(), "NO BLOCKED NUMBERS EXIST!",
-                    Toast.LENGTH_SHORT).show();
-        }
-        else {
-            while (result.moveToNext()) {
-
-                num_list.add(result.getString(1));
-                ListAdapter l_adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, num_list);
-                a.setAdapter(l_adapter);
-
-            }
-
-        }
 
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -79,9 +61,9 @@ public class View_Numbers_Fragment extends Fragment {
 
                 result.moveToPosition(i); //Set position of the row to that clicked on
                 Integer row_id = result.getInt(column_id); //Get ID of the selected row
-                String num_number = result.getString(column_number);
-                String num_id = row_id.toString();
-                alert(num_number, num_id);
+                num_number = result.getString(column_number);
+                 num_id = row_id.toString();
+                alert();
             }
         });
 
@@ -90,52 +72,89 @@ public class View_Numbers_Fragment extends Fragment {
 
     public void re_display()
     {
-        FragmentTransaction refresh = getFragmentManager().beginTransaction();
-        refresh.replace(R.id.content, new View_Numbers_Fragment());
-        refresh.commit();
+
+        new BackgroundReadFromNumberTable(getActivity().getApplicationContext(), this).execute("1");
+
     }
 
-    public void alert(final String num_number, final String num_id)
+    private void runDelete()
+    {
+        new BackgroundDeleteFromNumberTable(getActivity().getApplicationContext(), this).execute(num_id,"1");
+    }
+
+    private void check_area_code_exists()
+    {
+        new BackgroundNumberExistForMap(getActivity().getApplicationContext(), this).execute(num_number);
+    }
+
+
+    public void alert()
     {
         builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
         builder.setMessage("Blocked Number: " + num_number);
         builder.setCancelable(false);
         builder.setNegativeButton("Unblock", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                runDelete();
 
-                BackgroundTask.execute("delete", num_id, String.valueOf(1));
-                //data.delete_from_db(num_id,1);
-                re_display();
             }
         });
-        builder.setNeutralButton("View on Map", new DialogInterface.OnClickListener() {
+     builder.setNeutralButton("View on Map", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                boolean exist = data.area_code_exist(num_number, 2);
-                if (exist)
-                {
-                    Intent intent = new Intent(getActivity().getApplicationContext(), MapsActivity.class);
-                    intent.putExtra("area_code", num_number);
-                    startActivity(intent);
-                }
+                check_area_code_exists();
 
-                else
-                {
-                    builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
-                    builder.setMessage("Sorry this area code is not in our database, we hope to have this information for you at a later date!");
-                    builder.setCancelable(true);
-                    builder.setPositiveButton("OK", null);
-                    builder.show();
-
-                }
             }
-        });
+
+      });
+
         builder.setPositiveButton("Cancel", null);
         builder.show();
 
 
-
-
-
     }
 
+    public void show_data(Cursor data)
+    {
+        num_list.clear();
+        if(data.getCount() <= 0){
+            Toast.makeText(getActivity(), "NO BLOCKED NUMBERS EXIST!",
+                    Toast.LENGTH_SHORT).show();
+        }
+        else {
+            while (data.moveToNext()) {
+
+                num_list.add(data.getString(1));
+            }
+
+        }
+
+//        Activity act = getActivity();
+
+        ListAdapter l_adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, num_list);
+        a.setAdapter(l_adapter);
+
+        result = data;
+    }
+
+    public void query_result(Boolean result)
+    {
+        exist = result;
+
+        if (exist)
+        {
+            Intent intent = new Intent(getActivity().getApplicationContext(), MapsActivity.class);
+            intent.putExtra("area_code", num_number);
+            startActivity(intent);
+        }
+
+        else
+        {
+            builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
+            builder.setMessage("Sorry this area code is not in our database, we hope to have this information for you at a later date!");
+            builder.setCancelable(true);
+            builder.setPositiveButton("OK", null);
+            builder.show();
+
+        }
+    }
 }

@@ -2,6 +2,7 @@ package com.aa.calldefender;
 
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ public class View_Fragment extends Fragment {
     ListView b;
     DHelper data;
     android.support.v7.app.AlertDialog.Builder builder;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -42,7 +44,10 @@ public class View_Fragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
 
-
+        super.onSaveInstanceState(outState);
+    }
 }
 

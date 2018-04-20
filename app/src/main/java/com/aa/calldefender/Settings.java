@@ -21,7 +21,6 @@ public class Settings extends AppCompatActivity {
     Switch switchSMS;
     Switch switchCallDel;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
