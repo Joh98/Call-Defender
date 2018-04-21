@@ -1,25 +1,17 @@
 package com.aa.calldefender;
-
-/**
- * Created by admin on 20/04/2018.
- */
-
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-
-/**
- * Created by admin on 20/04/2018.
- */
-
+//Async task for the deletion of a phone number
 public class BackgroundDeleteFromNumberTable extends AsyncTask<String,Void, String> {
 
+    //Declare variables
     Context ctx;
     private DHelper database;
     public View_Numbers_Fragment viewer;
 
-
+    //Set contexts
     BackgroundDeleteFromNumberTable(Context ctx, View_Numbers_Fragment vnf)
     {
         this.ctx = ctx;
@@ -33,11 +25,11 @@ public class BackgroundDeleteFromNumberTable extends AsyncTask<String,Void, Stri
     }
 
     @Override
-    protected String doInBackground(String... params) {
-        database = new DHelper(ctx);
-        String data = params[0];
-        int identifier = Integer.parseInt(params[1]);
-        return database.delete_from_db(data, identifier);
+    protected String doInBackground(String... params) { //background task to be executed
+        database = new DHelper(ctx); //create new DB instance
+        String data = params[0]; //save phone number to variable
+        int identifier = Integer.parseInt(params[1]); //save query identifier to variable (parsed from a string)
+        return database.delete_from_db(data, identifier); //run the query and return
 
     }
 
@@ -47,10 +39,10 @@ public class BackgroundDeleteFromNumberTable extends AsyncTask<String,Void, Stri
     }
 
     @Override
-    protected void onPostExecute(String result) {
+    protected void onPostExecute(String result) { //After task has executed
 
-        Log.d("BackgroundDeleteFromDB", "onPostExecute: " + result);
-
+        Log.d("BackgroundDeleteFromDB", "onPostExecute: " + result); //Debug
+        //Call function within 'View_Numbers_Fragment' to re-display the phone numbers to the user
         viewer.re_display();
 
     }

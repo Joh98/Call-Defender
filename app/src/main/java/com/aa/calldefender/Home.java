@@ -8,21 +8,22 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
+//Class for 2nd activity that contains 3 fragments
 public class Home extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
-    private Fragment fragment = null;
-    int frag_id = 1;
+    int frag_id = 1; //set the fragment id to 1
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) { //On activity creation
         super.onCreate(savedInstanceState);
+
+        //Set view and navigation bar
         setContentView(R.layout.activity_home);
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
 
+        //Determines what fragment should be loaded via saved instances
         if(savedInstanceState != null){
             int frag = savedInstanceState.getInt("Fragment", 1);
 
@@ -43,11 +44,9 @@ public class Home extends AppCompatActivity implements BottomNavigationView.OnNa
         } else {
             loadFragment(new Home_Fragment());
         }
-
-
-
     }
 
+    //Function that loads fragments in
     private boolean loadFragment(Fragment fragment) {
 
         if (fragment != null) {
@@ -60,6 +59,7 @@ public class Home extends AppCompatActivity implements BottomNavigationView.OnNa
         return false;
     }
 
+    //Function that will determine which fragment will displayed on screen after a user has clicked on the bottom nav
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
@@ -82,10 +82,11 @@ public class Home extends AppCompatActivity implements BottomNavigationView.OnNa
                 break;
         }
 
-        return loadFragment(fragment);
+        return loadFragment(fragment); //call function for loading the desired fragment
 
     }
 
+    //Function that enables the custom broadcast receiver
     public void enableBroadcastReceiver(Context context) {
         ComponentName receiver = new ComponentName(context, CallInterceptor.class);
         PackageManager pm = context.getPackageManager();
@@ -93,6 +94,7 @@ public class Home extends AppCompatActivity implements BottomNavigationView.OnNa
 
     }
 
+    //Function that disables the custom broadcast receiver
     public void disableBroadcastReceiver(Context context) {
         ComponentName receiver = new ComponentName(context, CallInterceptor.class);
         PackageManager pm = context.getPackageManager();
@@ -100,7 +102,8 @@ public class Home extends AppCompatActivity implements BottomNavigationView.OnNa
 
     }
 
-
+    //Function that saves the current fragment to saved instances
+    // (required so correct fragment is displayed when the screen is rotated)
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putInt("Fragment", frag_id);

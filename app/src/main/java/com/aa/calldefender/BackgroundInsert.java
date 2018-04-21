@@ -1,23 +1,15 @@
 package com.aa.calldefender;
-
-/**
- * Created by admin on 20/04/2018.
- */
-
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
-
-/**
- * Created by admin on 20/04/2018.
- */
-
+//Async task for the insertion of phone number/area code to the DB
 public class BackgroundInsert extends AsyncTask<String,Void, Void> {
 
+    //Declare variables
     Context ctx;
     private DHelper database;
 
+    //Set context
     BackgroundInsert(Context ctx)
     {
         this.ctx = ctx;
@@ -30,10 +22,10 @@ public class BackgroundInsert extends AsyncTask<String,Void, Void> {
     }
 
     @Override
-    protected Void doInBackground(String... params) {
-        database = new DHelper(ctx);
-        int identifier = Integer.parseInt(params[1]);
-        database.insert_to_db(params[0], identifier);
+    protected Void doInBackground(String... params) { //background task to be executed
+        database = new DHelper(ctx); //create new DB instance
+        int identifier = Integer.parseInt(params[1]); //save query identifier to variable (parsed from a string)
+        database.insert_to_db(params[0], identifier); //run query
         return null;
     }
 
