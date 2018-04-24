@@ -155,8 +155,8 @@ public class DHelper extends SQLiteOpenHelper {
 
     private void populate_map_db(SQLiteDatabase sqLiteDatabase) //Function for populating the DB with map information on specific area codes
     {
-        sqLiteDatabase.execSQL("INSERT INTO " + T_NAME_3 + " VALUES('01282','-2.970721','56.462018', 'Dundee')");
-        sqLiteDatabase.execSQL("INSERT INTO " + T_NAME_3 + " VALUES('01382','-4.629179','55.458565', 'Ayr')");
+        sqLiteDatabase.execSQL("INSERT INTO " + T_NAME_3 + " VALUES('01382','-2.970721','56.462018', 'Dundee')");
+        sqLiteDatabase.execSQL("INSERT INTO " + T_NAME_3 + " VALUES('01292','-4.629179','55.458565', 'Ayr')");
         sqLiteDatabase.execSQL("INSERT INTO " + T_NAME_3 + " VALUES('0141','-4.25','55.8333', 'Glasgow')");
 
     }

@@ -14,18 +14,12 @@ import java.io.FileOutputStream;
 
 public class MainActivity extends AppCompatActivity {
 
-    public void disableBroadcastReceiver(Context context){
-        ComponentName receiver = new ComponentName(context, CallInterceptor.class);
-        PackageManager pm = context.getPackageManager();
-        pm.setComponentEnabledSetting(receiver,PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        disableBroadcastReceiver(this.getApplicationContext());
+
 
         final Button button_instructions = (Button) findViewById(R.id.button_instructions);
         final Button button_exit = (Button) findViewById(R.id.button_exit);
@@ -36,17 +30,6 @@ public class MainActivity extends AppCompatActivity {
 
         button_instructions.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-//              AlertDialog.Builder builder_1 = new AlertDialog.Builder(MainActivity.this);
-//              builder_1.setTitle("INSTRUCTIONS");
-//              builder_1.setMessage("Call Defender can be used to:" + System.lineSeparator() + System.lineSeparator() +
-//                      "- Block all phone numbers" + System.lineSeparator() +
-//                      "- Block phone numbers by area code" + System.lineSeparator() +
-//                      "- Unblock phone numbers" + System.lineSeparator() +
-//                      "- View statistics regarding the blocked numbers" + System.lineSeparator()
-//              ).setCancelable(true);
-//              AlertDialog instructions = builder_1.create();
-//              instructions.show();
-
                 Intent intent = new Intent(v.getContext(), Settings.class);
                 startActivity(intent);
 

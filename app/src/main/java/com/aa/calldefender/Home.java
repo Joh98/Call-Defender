@@ -37,7 +37,8 @@ public class Home extends AppCompatActivity implements BottomNavigationView.OnNa
             }
 
             else if (frag == 3) {
-                loadFragment(new View_Fragment());
+                View_Fragment f = new View_Fragment();
+                loadFragment(f);
                 frag_id = 3;
 
             }

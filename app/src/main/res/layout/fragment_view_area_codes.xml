@@ -15,7 +15,7 @@
             android:id="@+id/button2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CHANGE" />
+            android:text="THIS IS AREA" />
 
         <ListView
             android:id="@+id/list"

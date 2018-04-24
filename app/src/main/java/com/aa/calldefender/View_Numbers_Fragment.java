@@ -1,12 +1,14 @@
 package com.aa.calldefender;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +21,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-/**
- * Created by Jonathan on 24/03/2018.
- */
-
 public class View_Numbers_Fragment extends Fragment {
 
     ArrayList<String> num_list = new ArrayList<>();
@@ -31,21 +29,29 @@ public class View_Numbers_Fragment extends Fragment {
     DHelper data;
     android.support.v7.app.AlertDialog.Builder builder;
     Button button;
-    Boolean exist;
+    Boolean exist, pop_up;
     String num_number,num_id;
+    private Context context = null;
+    SharedPreferences.Editor editor = null;
+    SharedPreferences sharedPref;
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view =  inflater.inflate(R.layout.fragment_view_numbers, null);
-        data = new DHelper(getActivity().getApplicationContext());
-
-        new BackgroundReadFromNumberTable(getActivity().getApplicationContext(), this).execute("1");
+        context = getContext();
+        new BackgroundReadFromNumberTable(context, this).execute("1");
+        sharedPref = getActivity().getSharedPreferences("view_frag", Context.MODE_PRIVATE);
+        pop_up = sharedPref.getBoolean("number_pop_up", false);
+        editor = sharedPref.edit();
 
         a = (ListView)view.findViewById(R.id.list);
         button = (Button)view.findViewById(R.id.button_change);
 
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+
+                editor.putInt("view_frag", 2);
+                editor.apply();
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .replace(R.id.content, new View_Area_Codes_Fragment())
                         .commit();
@@ -73,43 +79,62 @@ public class View_Numbers_Fragment extends Fragment {
     public void re_display()
     {
 
-        new BackgroundReadFromNumberTable(getActivity().getApplicationContext(), this).execute("1");
+        new BackgroundReadFromNumberTable(context, this).execute("1");
 
     }
 
     private void runDelete()
     {
-        new BackgroundDeleteFromNumberTable(getActivity().getApplicationContext(), this).execute(num_id,"1");
+        new BackgroundDeleteFromNumberTable(context, this).execute(num_id,"1");
     }
 
     private void check_area_code_exists()
     {
-        new BackgroundNumberExistForMap(getActivity().getApplicationContext(), this).execute(num_number);
+        new BackgroundNumberExistForMap(context, this).execute(num_number);
     }
 
 
     public void alert()
     {
-        builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
-        builder.setMessage("Blocked Number: " + num_number);
+        builder = new android.support.v7.app.AlertDialog.Builder(context);
+        final AlertDialog dialog = builder.create();
+        editor.putBoolean("number_pop_up",true);
+        editor.apply();
+        builder.setMessage("Blocked Area Code: " + num_number);
         builder.setCancelable(false);
         builder.setNegativeButton("Unblock", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                editor.putBoolean("number_pop_up",false);
+                editor.apply();
                 runDelete();
 
             }
         });
      builder.setNeutralButton("View on Map", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                editor.putBoolean("number_pop_up",false);
+                editor.apply();
                 check_area_code_exists();
 
             }
 
       });
 
-        builder.setPositiveButton("Cancel", null);
+        builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                editor.putBoolean("number_pop_up",false);
+                editor.apply();
+                dialog.dismiss();
+            }
+
+        });
+
         builder.show();
 
+        editor.putString("number_num",num_number);
+        editor.apply();
+        editor.putString("_id",num_id);
+        editor.apply();
 
     }
 
@@ -117,7 +142,7 @@ public class View_Numbers_Fragment extends Fragment {
     {
         num_list.clear();
         if(data.getCount() <= 0){
-            Toast.makeText(getActivity(), "NO BLOCKED NUMBERS EXIST!",
+            Toast.makeText(context, "NO BLOCKED NUMBERS EXIST!",
                     Toast.LENGTH_SHORT).show();
         }
         else {
@@ -128,9 +153,8 @@ public class View_Numbers_Fragment extends Fragment {
 
         }
 
-//        Activity act = getActivity();
 
-        ListAdapter l_adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, num_list);
+        ListAdapter l_adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, num_list);
         a.setAdapter(l_adapter);
 
         result = data;
@@ -142,19 +166,37 @@ public class View_Numbers_Fragment extends Fragment {
 
         if (exist)
         {
-            Intent intent = new Intent(getActivity().getApplicationContext(), MapsActivity.class);
+            Intent intent = new Intent(context, MapsActivity.class);
             intent.putExtra("area_code", num_number);
             startActivity(intent);
         }
 
         else
         {
-            builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
+            builder = new android.support.v7.app.AlertDialog.Builder(context);
             builder.setMessage("Sorry this area code is not in our database, we hope to have this information for you at a later date!");
             builder.setCancelable(true);
             builder.setPositiveButton("OK", null);
             builder.show();
 
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        if (pop_up)
+        {
+            num_number = sharedPref.getString("number_num",null);
+            num_id = sharedPref.getString("number_id",null);
+            alert();
+        }
+
     }
 }

@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.provider.CallLog;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import java.lang.reflect.Method;
@@ -31,16 +32,17 @@ public class CallInterceptor extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) { //When a phone call is received (when broadcast receiver is on)
 
-        incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER); //Save incoming number to a variables
-        state = intent.getStringExtra(TelephonyManager.EXTRA_STATE); //Save the call state to a variable
-
         this.context = context; //Save context
-
         //Access and save shared preferences to variables
         sharedPref = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
         sms = sharedPref.getBoolean("sms", false);
         call_deletion = sharedPref.getBoolean("call_del", false);
         block_switch = sharedPref.getBoolean("block_all", false);
+
+        incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER); //Save incoming number to a variables
+        state = intent.getStringExtra(TelephonyManager.EXTRA_STATE); //Save the call state to a variable
+
+
 
         //Run async DB query that determine if the incoming number should be blocked
         new BackgroundNumberExist(context, this).execute(incomingNumber);
@@ -87,7 +89,7 @@ public class CallInterceptor extends BroadcastReceiver {
                 block_call(context); //Call function to block the call
 
                 if (sms) { //If SMS sending has been enabled send the incoming caller a warning text
-                    smsManager.sendTextMessage(incomingNumber, null, "test", null, null);
+                    smsManager.sendTextMessage(incomingNumber, null, "The person you are trying to call would not like to be contacted at this time!", null, null);
                 }
 
                 //Thread sleep required for call log deletion to properly work

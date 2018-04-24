@@ -4,6 +4,7 @@ package com.aa.calldefender;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,32 +23,49 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class View_Fragment extends Fragment {
-    ArrayList<String> num_list = new ArrayList<>();
-    ArrayList<String> num_list_2 = new ArrayList<>();
     Cursor result;
-    Cursor result_2;
-    ListView a;
-    ListView b;
     DHelper data;
-    android.support.v7.app.AlertDialog.Builder builder;
+    SharedPreferences.Editor editor = null;
+    int frag_id; //set the fragment id to 1
+
+    Context context = null;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
+
         View view =  inflater.inflate(R.layout.fragment_view, null);
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("view_frag", Context.MODE_PRIVATE);
+        frag_id = sharedPref.getInt("view_frag", 1);
+        editor = sharedPref.edit();
 
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content, new View_Numbers_Fragment())
-                .commit();
 
+
+        if (frag_id == 1) {
+            View_Numbers_Fragment f = new View_Numbers_Fragment();
+
+
+            editor.putInt("view_frag", 1);
+            editor.apply();
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content, f).commit();
+
+
+        }
+
+        else if (frag_id == 2)
+        {
+            View_Area_Codes_Fragment f = new View_Area_Codes_Fragment();
+            editor.putInt("view_frag", 2);
+            editor.apply();
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content, f).commit();
+
+        }
         return view;
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
 
-        super.onSaveInstanceState(outState);
-    }
 }
 

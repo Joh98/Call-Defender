@@ -9,6 +9,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.view.GestureDetector;
@@ -34,6 +36,7 @@ public class Home_Fragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+
         //Grab shared preferences
         sharedPref = getActivity().getSharedPreferences("settings", Context.MODE_PRIVATE);
 
@@ -47,9 +50,11 @@ public class Home_Fragment extends Fragment {
         block_all = sharedPref.getBoolean("block_all", false);
         editor = sharedPref.edit();
 
+
         //Set variable to represent the card on the UI and setup the gesture listener
         card_view = (CardView) view.findViewById(R.id.card_1);
         mDetector = new GestureDetector(new MyGestureListener());
+
 
         card_view.setOnTouchListener(new View.OnTouchListener() {
 
@@ -88,9 +93,18 @@ public class Home_Fragment extends Fragment {
                 if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {//If user hasn't allowed call permissions warn the user
                     Toast.makeText(getActivity(), "Insufficient permissions... call blocking DISABLED!",
                             Toast.LENGTH_LONG).show();
+                    editor.putBoolean("on", false);
+                    editor.apply();
+                    editor.putBoolean("block_all", false);
+                    editor.apply();
+
                 } else { //else tell the user they can now use call blocking
                     Toast.makeText(getActivity(), "Permissions granted, you can now enable call blocking!",
                             Toast.LENGTH_LONG).show();
+                    editor.putBoolean("on", false);
+                    editor.apply();
+                    editor.putBoolean("block_all", false);
+                    editor.apply();
                 }
 
     }
@@ -117,6 +131,8 @@ public class Home_Fragment extends Fragment {
                 editor.apply();
                 Toast.makeText(getActivity(), "ON!",
                         Toast.LENGTH_SHORT).show();
+
+
             } else { //Else turn call blocking off
 
                 enable_disable.disableBroadcastReceiver(getActivity().getApplicationContext());
@@ -126,6 +142,7 @@ public class Home_Fragment extends Fragment {
 
                 Toast.makeText(getActivity(), "OFF!",
                         Toast.LENGTH_SHORT).show();
+
             }
 
             return true;
