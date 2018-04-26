@@ -17,7 +17,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -34,6 +37,7 @@ public class View_Numbers_Fragment extends Fragment {
     private Context context = null;
     SharedPreferences.Editor editor = null;
     SharedPreferences sharedPref;
+    TextView disclaimer;
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
@@ -43,7 +47,9 @@ public class View_Numbers_Fragment extends Fragment {
         sharedPref = getActivity().getSharedPreferences("view_frag", Context.MODE_PRIVATE);
         pop_up = sharedPref.getBoolean("number_pop_up", false);
         editor = sharedPref.edit();
+        getActivity().setTitle("Blocked Phone Numbers");
 
+        disclaimer = (TextView)view.findViewById(R.id.text_disclaimer);
         a = (ListView)view.findViewById(R.id.list);
         button = (Button)view.findViewById(R.id.button_change);
 
@@ -100,7 +106,7 @@ public class View_Numbers_Fragment extends Fragment {
         final AlertDialog dialog = builder.create();
         editor.putBoolean("number_pop_up",true);
         editor.apply();
-        builder.setMessage("Blocked Area Code: " + num_number);
+        builder.setMessage("Blocked Number: " + num_number);
         builder.setCancelable(false);
         builder.setNegativeButton("Unblock", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -142,20 +148,22 @@ public class View_Numbers_Fragment extends Fragment {
     {
         num_list.clear();
         if(data.getCount() <= 0){
-            Toast.makeText(context, "NO BLOCKED NUMBERS EXIST!",
-                    Toast.LENGTH_SHORT).show();
+            a.setVisibility(View.INVISIBLE);
+            disclaimer.setVisibility(View.VISIBLE);
         }
         else {
+
+            a.setVisibility(View.VISIBLE);
+            disclaimer.setVisibility(View.INVISIBLE);
             while (data.moveToNext()) {
 
                 num_list.add(data.getString(1));
             }
 
+            ListAdapter l_adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, num_list);
+            a.setAdapter(l_adapter);
+
         }
-
-
-        ListAdapter l_adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, num_list);
-        a.setAdapter(l_adapter);
 
         result = data;
     }

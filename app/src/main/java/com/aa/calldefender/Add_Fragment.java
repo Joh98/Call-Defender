@@ -33,6 +33,7 @@ public class Add_Fragment extends Fragment {
         //Set variables to represent the cards on the UI
         card_view = (CardView) view.findViewById(R.id.card_1);
         card_view_2 = (CardView) view.findViewById(R.id.card_2);
+        getActivity().setTitle("");
 
 
         card_view.setOnTouchListener(new View.OnTouchListener() {

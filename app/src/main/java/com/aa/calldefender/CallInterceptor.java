@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.provider.CallLog;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
@@ -28,6 +29,10 @@ public class CallInterceptor extends BroadcastReceiver {
     boolean call_deletion;
     boolean block_switch;
     Context context;
+    int blocked_calls_tally;
+    SharedPreferences.Editor editor;
+
+
 
     @Override
     public void onReceive(Context context, Intent intent) { //When a phone call is received (when broadcast receiver is on)
@@ -38,6 +43,8 @@ public class CallInterceptor extends BroadcastReceiver {
         sms = sharedPref.getBoolean("sms", false);
         call_deletion = sharedPref.getBoolean("call_del", false);
         block_switch = sharedPref.getBoolean("block_all", false);
+
+
 
         incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER); //Save incoming number to a variables
         state = intent.getStringExtra(TelephonyManager.EXTRA_STATE); //Save the call state to a variable
@@ -115,6 +122,16 @@ public class CallInterceptor extends BroadcastReceiver {
                     //Delete call log for incoming number
                     context.getContentResolver().delete(CallLog.Calls.CONTENT_URI, "NUMBER=" + "'" + incomingNumber + "'", null);
                 }
+
+
+                blocked_calls_tally = sharedPref.getInt("tally", 0);
+                blocked_calls_tally +=1;
+                editor = sharedPref.edit();
+                editor.putInt("tally", blocked_calls_tally);
+                editor.apply();
+
+
+
             }
         }
 
@@ -123,7 +140,7 @@ public class CallInterceptor extends BroadcastReceiver {
             block_call(context); //call function to block the call
 
             if (sms) { //If SMS sending has been enabled send the incoming caller a warning text
-                smsManager.sendTextMessage(incomingNumber, null, "test", null, null);
+                smsManager.sendTextMessage(incomingNumber, null, "The person you are trying to call would not like to be contacted at this time!", null, null);
             }
 
             //Thread sleep required for call log deletion to properly work
@@ -136,6 +153,13 @@ public class CallInterceptor extends BroadcastReceiver {
             if (call_deletion){ //If call log deletion has been enabled delete the call log for the incoming number
                 context.getContentResolver().delete(CallLog.Calls.CONTENT_URI, "NUMBER=" + "'"+ incomingNumber +"'", null);
             }
+
+            blocked_calls_tally = sharedPref.getInt("tally", 0);
+            blocked_calls_tally +=1;
+            editor = sharedPref.edit();
+            editor.putInt("tally", blocked_calls_tally);
+            editor.apply();
+
         }
     }
 

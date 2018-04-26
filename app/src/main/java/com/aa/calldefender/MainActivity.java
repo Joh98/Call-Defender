@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
         final Button button_instructions = (Button) findViewById(R.id.button_instructions);
         final Button button_exit = (Button) findViewById(R.id.button_exit);
         final Button button_start = (Button) findViewById(R.id.button_start);
+        this.setTitle("");
 
 
         requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.PROCESS_OUTGOING_CALLS, Manifest.permission.CALL_PHONE,Manifest.permission.READ_CALL_LOG,Manifest.permission.WRITE_CALL_LOG, Manifest.permission. SEND_SMS }, 4);

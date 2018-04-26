@@ -6,56 +6,75 @@
     android:layout_height="match_parent"
     tools:context="com.aa.calldefender.MainActivity">
 
-    <RelativeLayout
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="360dp"
+        android:layout_height="250dp"
+        android:layout_above="@+id/button_start"
+        android:layout_alignParentStart="true"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.145"
+        app:srcCompat="@drawable/logo" />
+
+    <Button
+        android:id="@+id/button_start"
+        style="@android:style/Widget.Material.Light.Button"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button_instructions"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="START"
+        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.729" />
+
+    <Button
+        android:id="@+id/button_instructions"
+        style="@android:style/Widget.Material.Light.Button.Small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button_exit"
+        android:layout_alignEnd="@+id/button_start"
+        android:layout_alignParentEnd="false"
+        android:layout_alignStart="@+id/button_start"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="SETTINGS"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.844" />
 
-        <ImageView
-            android:id="@+id/imageView4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="38dp"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/logo" />
-
-        <Button
-            android:id="@+id/button_start"
-            style="@android:style/Widget.DeviceDefault.Light.Button.Inset"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/button_instructions"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="20dp"
-            android:text="START" />
-
-        <Button
-            android:id="@+id/button_instructions"
-            style="@android:style/Widget.DeviceDefault.Light.Button.Inset"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/button_exit"
-            android:layout_alignEnd="@+id/button_start"
-            android:layout_alignParentEnd="false"
-            android:layout_alignStart="@+id/button_start"
-            android:text="INSTRUCTIONS" />
-
-        <Button
-            android:id="@+id/button_exit"
-            style="@android:style/Widget.DeviceDefault.Light.Button.Inset"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/button_instructions"
-            android:layout_alignParentBottom="true"
-            android:layout_alignStart="@+id/button_instructions"
-            android:layout_marginBottom="48dp"
-            android:text="EXIT" />
-
-    </RelativeLayout>
+    <Button
+        android:id="@+id/button_exit"
+        style="@android:style/Widget.DeviceDefault.Light.Button.Small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/button_instructions"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/button_instructions"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="EXIT"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.96" />
 
 </android.support.constraint.ConstraintLayout>

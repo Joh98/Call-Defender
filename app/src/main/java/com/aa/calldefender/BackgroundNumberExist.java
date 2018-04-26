@@ -10,11 +10,13 @@ public class BackgroundNumberExist extends AsyncTask<String,Void, Boolean> {
     private DHelper database;
     public CallInterceptor viewer;
 
+
     //Set contexts
     BackgroundNumberExist(Context ctx, CallInterceptor ci)
     {
         this.ctx = ctx;
         viewer = ci;
+
     }
 
     @Override

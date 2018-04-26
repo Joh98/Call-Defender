@@ -19,7 +19,7 @@
             android:layout_marginEnd="10dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="8dp"
-            android:text="There are currently no phone numbers on the blocked list"
+            android:text="There are currently no area codes on the blocked list"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat"
             android:textColor="@color/cardview_shadow_start_color"
@@ -28,27 +28,41 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.278" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <View
-            android:id="@+id/view7"
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="10dp"
+            android:text="View blocked numbers"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <ListView
+            android:id="@+id/list"
             android:layout_width="0dp"
-            android:layout_height="1dp"
+            android:layout_height="165dp"
             android:layout_marginBottom="8dp"
-            android:background="@android:color/darker_gray"
+            android:layout_marginTop="50dp"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.143" />
+            app:layout_constraintVertical_bias="0.266" />
 
         <View
-            android:id="@+id/view10"
+            android:id="@+id/view7"
             android:layout_width="0dp"
-            android:layout_height="71dp"
+            android:layout_height="68dp"
             android:layout_marginBottom="8dp"
             android:background="#FFFFFF"
             android:visibility="visible"
@@ -57,34 +71,21 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.005" />
 
-        <ListView
-            android:id="@+id/list"
+        <View
+            android:id="@+id/view5"
             android:layout_width="0dp"
-            android:layout_height="384dp"
+            android:layout_height="2dp"
             android:layout_marginBottom="8dp"
+            android:background="@android:color/darker_gray"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.605" />
-
-        <Button
-            android:id="@+id/button_change"
-            android:layout_width="300dp"
-            android:layout_height="50dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="10dp"
-            android:text="View blocked area codes"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.249" />
 
     </android.support.constraint.ConstraintLayout>
 

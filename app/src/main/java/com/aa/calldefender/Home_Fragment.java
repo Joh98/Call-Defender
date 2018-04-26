@@ -19,6 +19,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 //Class for the Home Fragment (Where a user can turn call blocking on and off)
@@ -32,6 +34,10 @@ public class Home_Fragment extends Fragment {
     SharedPreferences.Editor editor;
     boolean on;
     boolean block_all;
+    int image;
+    ImageView i_view;
+    int blocked_calls_tally;
+    TextView tally;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -39,16 +45,24 @@ public class Home_Fragment extends Fragment {
 
         //Grab shared preferences
         sharedPref = getActivity().getSharedPreferences("settings", Context.MODE_PRIVATE);
-
         //Display the fragment
         View view = inflater.inflate(R.layout.fragment_home, null);
+        i_view = view.findViewById(R.id.imageView3);
+        getActivity().setTitle("");
+
+        determine_image();
         FrameLayout frameLayoutBalance = (FrameLayout) view.findViewById(R.id.home_frame);
-        frameLayoutBalance.setBackgroundColor(Color.parseColor("#f9f9f9"));
 
         //Save shared preferences data to variables and set up the editor
         on = sharedPref.getBoolean("on", false);
         block_all = sharedPref.getBoolean("block_all", false);
         editor = sharedPref.edit();
+        blocked_calls_tally = sharedPref.getInt("tally", 0);
+        tally = (TextView)view.findViewById(R.id.blocked_value);
+        tally.setText(Integer.toString(blocked_calls_tally));
+
+
+
 
 
         //Set variable to represent the card on the UI and setup the gesture listener
@@ -83,6 +97,28 @@ public class Home_Fragment extends Fragment {
     public void checkCallPermission() { //Function that checks for phone call permissions
 
        requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.PROCESS_OUTGOING_CALLS, Manifest.permission.CALL_PHONE, Manifest.permission.READ_CALL_LOG, Manifest.permission.WRITE_CALL_LOG}, 1);
+
+    }
+
+    public void determine_image()
+    {
+        image = sharedPref.getInt("image", 1);
+
+        if (image == 1)
+        {
+            i_view.setImageResource(R.drawable.off);
+        }
+
+        else if (image == 2)
+        {
+            i_view.setImageResource(R.drawable.on);
+        }
+
+        else if (image == 3)
+        {
+            i_view.setImageResource(R.drawable.all);
+        }
+
 
     }
 
@@ -129,8 +165,9 @@ public class Home_Fragment extends Fragment {
                 enable_disable.enableBroadcastReceiver(getActivity().getApplicationContext());
                 editor.putBoolean("on", true);
                 editor.apply();
-                Toast.makeText(getActivity(), "ON!",
-                        Toast.LENGTH_SHORT).show();
+                editor.putInt("image",2);
+                editor.apply();
+                determine_image();
 
 
             } else { //Else turn call blocking off
@@ -139,9 +176,12 @@ public class Home_Fragment extends Fragment {
                 editor.putBoolean("on", false);
                 editor.putBoolean("block_all", false);
                 editor.apply();
-
-                Toast.makeText(getActivity(), "OFF!",
-                        Toast.LENGTH_SHORT).show();
+                editor.putInt("image",1);
+                editor.apply();
+                editor.putInt("tally", 0);
+                editor.apply();
+                tally.setText("0");
+                determine_image();
 
             }
 
@@ -167,8 +207,9 @@ public class Home_Fragment extends Fragment {
                 editor.apply();
                 editor.putBoolean("block_all", true);
                 editor.apply();
-                Toast.makeText(getActivity(), "ALL!",
-                        Toast.LENGTH_SHORT).show();
+                editor.putInt("image",3);
+                editor.apply();
+                determine_image();
             }
 
             else if (on && !block_all) { // If call blocking isn't on and neither is the block all flag, turn on and set flag to true
@@ -178,8 +219,9 @@ public class Home_Fragment extends Fragment {
                 editor.apply();
                 editor.putBoolean("block_all", true);
                 editor.apply();
-                Toast.makeText(getActivity(), "ALL!",
-                        Toast.LENGTH_SHORT).show();
+                editor.putInt("image",3);
+                editor.apply();
+                determine_image();
             }
 
             else { //Else turn call blocking off
@@ -188,8 +230,12 @@ public class Home_Fragment extends Fragment {
                 editor.apply();
                 editor.putBoolean("block_all", false);
                 editor.apply();
-                Toast.makeText(getActivity(), "OFF!",
-                        Toast.LENGTH_SHORT).show();
+                editor.putInt("image",1);
+                editor.apply();
+                editor.putInt("tally", 0);
+                editor.apply();
+                tally.setText("0");
+                determine_image();
             }
 
         }

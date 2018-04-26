@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class View_Area_Codes_Fragment extends Fragment {
     SharedPreferences.Editor editor = null;
     SharedPreferences sharedPref;
     Boolean pop_up;
+    TextView disclaimer;
 
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -44,8 +46,10 @@ public class View_Area_Codes_Fragment extends Fragment {
         a = (ListView)view.findViewById(R.id.list);
         button = (Button)view.findViewById(R.id.button2);
         sharedPref = getActivity().getSharedPreferences("view_frag", Context.MODE_PRIVATE);
+        disclaimer = (TextView)view.findViewById(R.id.text_disclaimer);
         pop_up = sharedPref.getBoolean("area_pop_up", false);
         editor = sharedPref.edit();
+        getActivity().setTitle("Blocked Area Codes");
 
 
 
@@ -126,20 +130,21 @@ public class View_Area_Codes_Fragment extends Fragment {
     {
         num_list.clear();
         if(data.getCount() <= 0){
-            Toast.makeText(context, "NO BLOCKED AREA CODES EXIST!",
-                    Toast.LENGTH_SHORT).show();
+            a.setVisibility(View.INVISIBLE);
+            disclaimer.setVisibility(View.VISIBLE);
         }
         else {
             while (data.moveToNext()) {
+                a.setVisibility(View.VISIBLE);
+                disclaimer.setVisibility(View.INVISIBLE);
 
                 num_list.add(data.getString(1));
             }
 
+            ListAdapter l_adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, num_list);
+            a.setAdapter(l_adapter);
+
         }
-
-        ListAdapter l_adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, num_list);
-        a.setAdapter(l_adapter);
-
         result = data;
     }
 

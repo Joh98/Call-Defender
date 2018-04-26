@@ -18,6 +18,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
+import android.widget.ImageSwitcher;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -31,7 +33,7 @@ public class Settings extends AppCompatActivity {
     Boolean help;
     Boolean call_dell_pref;
     SharedPreferences sharedPref = null;
-    Button button_help;
+    ImageButton button_help;
     android.support.v7.app.AlertDialog.Builder builder;
 
     @Override
@@ -43,13 +45,15 @@ public class Settings extends AppCompatActivity {
         switchSMS = (Switch)this.findViewById(R.id.switch_sms);
         switchCallDel = (Switch)this.findViewById(R.id.switch_call_del);
         context = this;
+        this.setTitle("Settings");
+
 
         sms_pref = sharedPref.getBoolean("sms", false);
         call_dell_pref = sharedPref.getBoolean("call_del", false);
         help = sharedPref.getBoolean("help",false);
         switchSMS.setChecked(sms_pref);
         switchCallDel.setChecked(call_dell_pref);
-        button_help = (Button)findViewById(R.id.button_help);
+        button_help = (ImageButton)findViewById(R.id.button_help);
 
         if(help)
         {
