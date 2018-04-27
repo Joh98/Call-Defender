@@ -139,7 +139,7 @@ public class View_Numbers_Fragment extends Fragment {
 
         editor.putString("number_num",num_number);
         editor.apply();
-        editor.putString("_id",num_id);
+        editor.putString("number_id",num_id);
         editor.apply();
 
     }
@@ -176,7 +176,9 @@ public class View_Numbers_Fragment extends Fragment {
         {
             Intent intent = new Intent(context, MapsActivity.class);
             intent.putExtra("area_code", num_number);
+            editor.apply();
             startActivity(intent);
+
         }
 
         else
@@ -193,12 +195,15 @@ public class View_Numbers_Fragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+
     }
 
     @Override
     public void onResume()
     {
         super.onResume();
+        pop_up = sharedPref.getBoolean("number_pop_up", false);
+
         if (pop_up)
         {
             num_number = sharedPref.getString("number_num",null);

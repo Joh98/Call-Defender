@@ -41,6 +41,12 @@
             </intent-filter>
         </receiver>
 
+        <service
+            android:name=".RemovedFromAllApps"
+            android:enabled="true"
+            android:exported="false"
+            android:stopWithTask="false" />
+
         <activity android:name=".Settings" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.

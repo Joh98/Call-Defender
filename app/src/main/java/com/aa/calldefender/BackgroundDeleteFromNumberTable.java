@@ -8,7 +8,6 @@ public class BackgroundDeleteFromNumberTable extends AsyncTask<String,Void, Stri
 
     //Declare variables
     Context ctx;
-    private DHelper database;
     public View_Numbers_Fragment viewer;
 
     //Set contexts
@@ -26,7 +25,7 @@ public class BackgroundDeleteFromNumberTable extends AsyncTask<String,Void, Stri
 
     @Override
     protected String doInBackground(String... params) { //background task to be executed
-        database = new DHelper(ctx); //create new DB instance
+        DHelper database = new DHelper(ctx);
         String data = params[0]; //save phone number to variable
         int identifier = Integer.parseInt(params[1]); //save query identifier to variable (parsed from a string)
         return database.delete_from_db(data, identifier); //run the query and return

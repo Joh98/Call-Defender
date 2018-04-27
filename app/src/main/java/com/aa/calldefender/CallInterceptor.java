@@ -7,16 +7,13 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.provider.CallLog;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import java.lang.reflect.Method;
 
-//https://stackoverflow.com/questions/15945952/no-such-method-getitelephony-to-disconnect-call
-
 //Class for the handling of phone calls and blocking
 public class CallInterceptor extends BroadcastReceiver {
+//https://stackoverflow.com/questions/15945952/no-such-method-getitelephony-to-disconnect-call
 
     //Declare variables
     boolean num_exist;
@@ -32,28 +29,19 @@ public class CallInterceptor extends BroadcastReceiver {
     int blocked_calls_tally;
     SharedPreferences.Editor editor;
 
-
-
     @Override
     public void onReceive(Context context, Intent intent) { //When a phone call is received (when broadcast receiver is on)
-
         this.context = context; //Save context
         //Access and save shared preferences to variables
         sharedPref = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
         sms = sharedPref.getBoolean("sms", false);
         call_deletion = sharedPref.getBoolean("call_del", false);
         block_switch = sharedPref.getBoolean("block_all", false);
-
-
-
         incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER); //Save incoming number to a variables
         state = intent.getStringExtra(TelephonyManager.EXTRA_STATE); //Save the call state to a variable
 
-
-
         //Run async DB query that determine if the incoming number should be blocked
         new BackgroundNumberExist(context, this).execute(incomingNumber);
-
     }
 
     public void block_call(Context context) { //Function that will block the incoming call
@@ -129,9 +117,7 @@ public class CallInterceptor extends BroadcastReceiver {
                 editor = sharedPref.edit();
                 editor.putInt("tally", blocked_calls_tally);
                 editor.apply();
-
-
-
+                context.sendBroadcast(new Intent("com.aa.calldefender.UPDATE_COUNT"));
             }
         }
 
@@ -159,6 +145,9 @@ public class CallInterceptor extends BroadcastReceiver {
             editor = sharedPref.edit();
             editor.putInt("tally", blocked_calls_tally);
             editor.apply();
+
+            //Send broadcast to Home_Fragment so that the tally of blocked calls is updated
+            context.sendBroadcast(new Intent("com.aa.calldefender.UPDATE_COUNT"));
 
         }
     }

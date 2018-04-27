@@ -8,7 +8,6 @@ public class BackgroundDeleteFromAreaCodeTable extends AsyncTask<String,Void, St
 
     //Declare variables
     Context ctx;
-    private DHelper database;
     public View_Area_Codes_Fragment viewer;
 
     //Set contexts
@@ -25,7 +24,7 @@ public class BackgroundDeleteFromAreaCodeTable extends AsyncTask<String,Void, St
 
     @Override
     protected String doInBackground(String... params) { //background task to be executed
-        database = new DHelper(ctx); //create new DB instance
+        DHelper database = new DHelper(ctx);
         String data = params[0]; //save area code to variable
         int identifier = Integer.parseInt(params[1]); //save query identifier to variable (parsed from a string)
         return database.delete_from_db(data, identifier); //run the query and return

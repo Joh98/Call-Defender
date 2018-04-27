@@ -33,7 +33,8 @@ public class Add_Fragment extends Fragment {
         //Set variables to represent the cards on the UI
         card_view = (CardView) view.findViewById(R.id.card_1);
         card_view_2 = (CardView) view.findViewById(R.id.card_2);
-        getActivity().setTitle("");
+
+        getActivity().setTitle(""); //Set the activity title
 
 
         card_view.setOnTouchListener(new View.OnTouchListener() {
@@ -48,7 +49,7 @@ public class Add_Fragment extends Fragment {
 
                     return true;
                 } else { //else set appearance of the card back to it's original state
-                    card_view.setCardElevation(20);
+                    card_view.setCardElevation(15);
                     card_view.setCardBackgroundColor(Color.parseColor("#FFFFFF"));
 
                     return false;
@@ -70,7 +71,7 @@ public class Add_Fragment extends Fragment {
 
                     return true;
                 } else { //else set appearance of the card back to it's original state
-                    card_view_2.setCardElevation(20);
+                    card_view_2.setCardElevation(15);
                     card_view_2.setCardBackgroundColor(Color.parseColor("#FFFFFF"));
 
                     return false;

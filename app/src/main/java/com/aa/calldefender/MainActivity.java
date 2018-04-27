@@ -20,6 +20,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Start service that detects when the app has been removed via 'All Apps' view
+        Intent i = new Intent(this, RemovedFromAllApps.class);
+        startService(i);
+
 
         final Button button_instructions = (Button) findViewById(R.id.button_instructions);
         final Button button_exit = (Button) findViewById(R.id.button_exit);
