@@ -37,6 +37,7 @@ public class HomeFragment extends Fragment {
     ImageView i_view;
     int blocked_calls_tally;
     TextView tally;
+    BroadcastReceiver receiver;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) { //On creation
@@ -89,7 +90,7 @@ public class HomeFragment extends Fragment {
 
     public void startReceiver() //Function that starts a receiver that listens for broadcasts
     {
-        BroadcastReceiver receiver = new BroadcastReceiver() {
+        receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) { //When a broadcast is received (i.e. a call has been blocked)
                 updateTally(); //Call the function to update the number of 'calls blocked this session'
@@ -232,6 +233,12 @@ public class HomeFragment extends Fragment {
             }
 
         }
+    }
+
+    @Override
+    public void onDestroy() { //On destroy unregister receiver
+        super.onDestroy();
+        getActivity().unregisterReceiver(receiver);
     }
 }
 
