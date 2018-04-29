@@ -37,6 +37,7 @@ public class HomeFragment extends Fragment {
     ImageView i_view;
     int blocked_calls_tally;
     TextView tally;
+    BroadcastReceiver receiver;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) { //On creation
@@ -89,7 +90,7 @@ public class HomeFragment extends Fragment {
 
     public void startReceiver() //Function that starts a receiver that listens for broadcasts
     {
-        BroadcastReceiver receiver = new BroadcastReceiver() {
+        receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) { //When a broadcast is received (i.e. a call has been blocked)
                 updateTally(); //Call the function to update the number of 'calls blocked this session'
@@ -136,22 +137,22 @@ public class HomeFragment extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
-                if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {//If user hasn't allowed call permissions warn the user
-                    Toast.makeText(getActivity(), "Insufficient permissions... call blocking DISABLED!",
-                            Toast.LENGTH_LONG).show();
-                    //Set call blocking shared preferences to false
-                    editor.putBoolean("on", false);
-                    editor.putBoolean("block_all", false);
-                    editor.apply();
+        if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {//If user hasn't allowed call permissions warn the user
+            Toast.makeText(getActivity(), "Insufficient permissions... call blocking DISABLED!",
+                    Toast.LENGTH_LONG).show();
+            //Set call blocking shared preferences to false
+            editor.putBoolean("on", false);
+            editor.putBoolean("block_all", false);
+            editor.apply();
 
-                } else { //Else tell the user they can now use call blocking
-                    Toast.makeText(getActivity(), "Permissions granted, you can now enable call blocking!",
-                            Toast.LENGTH_LONG).show();
-                    //Set call blocking shared preferences to false
-                    editor.putBoolean("on", false);
-                    editor.putBoolean("block_all", false);
-                    editor.apply();
-                }
+        } else { //Else tell the user they can now use call blocking
+            Toast.makeText(getActivity(), "Permissions granted, you can now enable call blocking!",
+                    Toast.LENGTH_LONG).show();
+            //Set call blocking shared preferences to false
+            editor.putBoolean("on", false);
+            editor.putBoolean("block_all", false);
+            editor.apply();
+        }
     }
 
     //Gesture detection class
@@ -233,6 +234,10 @@ public class HomeFragment extends Fragment {
 
         }
     }
+
+    @Override
+    public void onDestroy() { //On destroy unregister receiver
+        super.onDestroy();
+        getActivity().unregisterReceiver(receiver);
+    }
 }
-
-
