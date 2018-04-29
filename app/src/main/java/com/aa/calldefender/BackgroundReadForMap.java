@@ -2,17 +2,14 @@ package com.aa.calldefender;
 import android.os.AsyncTask;
 import java.util.List;
 
-//Async task that quires the DB for the required data for the MapsActivity
+//Async task that queries the DB for the required data for MapsActivity
 public class BackgroundReadForMap extends AsyncTask<String,Void, List> {
 
-    //Declare variables
-    private DHelper database;
-    public MapsActivity viewer;
+    private MapsActivity mapsActivity;
 
     //Set context
-    BackgroundReadForMap(MapsActivity ma)
-    {
-        viewer = ma;
+    BackgroundReadForMap(MapsActivity ma) {
+        mapsActivity = ma;
     }
 
     @Override
@@ -21,9 +18,9 @@ public class BackgroundReadForMap extends AsyncTask<String,Void, List> {
     }
 
     @Override
-    protected List doInBackground(String... params) { //background task to be executed
-        database = new DHelper(viewer); //Create new DB instance
-        return database.getAreaCodeForMap(params[0]); //run and return result of DB query
+    protected List doInBackground(String... params) { //Background task to be executed
+        DHelper database = new DHelper(mapsActivity); //Declare DB instance
+        return database.getAreaCodeForMap(params[0]); //Run and return result of DB query
     }
 
     @Override
@@ -32,10 +29,9 @@ public class BackgroundReadForMap extends AsyncTask<String,Void, List> {
     }
 
     @Override
-    protected void onPostExecute(List result) { //After execution
+    protected void onPostExecute(List result) { //After task has executed
 
-        //Call function within MapsActivity so that the query data can be passed back and used for the map
-        viewer.show_Map(result);
+        //Call function within 'MapsActivity' so that the query data can be passed back and used for the map
+        mapsActivity.showMap(result);
     }
-
 }

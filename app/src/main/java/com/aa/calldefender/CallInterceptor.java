@@ -13,18 +13,12 @@ import java.lang.reflect.Method;
 
 //Class for the handling of phone calls and blocking
 public class CallInterceptor extends BroadcastReceiver {
-//https://stackoverflow.com/questions/15945952/no-such-method-getitelephony-to-disconnect-call
 
     //Declare variables
-    boolean num_exist;
+    boolean num_exist, sms, call_deletion, block_all;
     SmsManager smsManager = SmsManager.getDefault();
-    String incomingNumber;
-    String state;
-    DHelper database;
+    String incoming_number, state;
     SharedPreferences sharedPref;
-    boolean sms;
-    boolean call_deletion;
-    boolean block_switch;
     Context context;
     int blocked_calls_tally;
     SharedPreferences.Editor editor;
@@ -32,59 +26,56 @@ public class CallInterceptor extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) { //When a phone call is received (when broadcast receiver is on)
         this.context = context; //Save context
+
         //Access and save shared preferences to variables
         sharedPref = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
-        sms = sharedPref.getBoolean("sms", false);
-        call_deletion = sharedPref.getBoolean("call_del", false);
-        block_switch = sharedPref.getBoolean("block_all", false);
-        incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER); //Save incoming number to a variables
+        sms = sharedPref.getBoolean("sms", false); //Boolean value that determines if an sms should be sent to blocked number
+        call_deletion = sharedPref.getBoolean("call_del", false); //Boolean value that determines if the call log entry of the blocked call should be deleted
+        block_all = sharedPref.getBoolean("block_all", false); //Boolean value that determines if all numbers should be blocked or just those in the DB
+
+        incoming_number = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER); //Save incoming number to a variable
         state = intent.getStringExtra(TelephonyManager.EXTRA_STATE); //Save the call state to a variable
 
-        //Run async DB query that determine if the incoming number should be blocked
-        new BackgroundNumberExist(context, this).execute(incomingNumber);
+        //Run async DB task that determines if the incoming number should be blocked
+        new BackgroundNumberExist(context, this).execute(incoming_number);
     }
 
-    public void block_call(Context context) { //Function that will block the incoming call
+    public void blockCall(Context context) { //Function that will block the incoming call
         try {
 
-            TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-            // Get the getITelephony() method
-            Class classTelephony = Class.forName(telephonyManager.getClass().getName());
-            Method methodGetITelephony = classTelephony.getDeclaredMethod("getITelephony");
-            // Ignore that the method is supposed to be private
+            TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE); //Access Telephony
+            Class classTelephony = Class.forName(telephonyManager.getClass().getName()); //Get an instance of the Telephony Class
+
+            Method methodGetITelephony = classTelephony.getDeclaredMethod("getITelephony"); //Get access to the 'getITelephony' function
             methodGetITelephony.setAccessible(true);
-            // Invoke getITelephony() to get the ITelephony interface
-            Object telephonyInterface = methodGetITelephony.invoke(telephonyManager);
-            // Get the endCall method from ITelephony
-            Class telephonyInterfaceClass = Class.forName(telephonyInterface.getClass().getName());
-            //telephonyService.silenceRinger();
-            Method methodSilence = telephonyInterfaceClass.getDeclaredMethod("silenceRinger");
-            Method methodEndCall = telephonyInterfaceClass.getDeclaredMethod("endCall");
-            // Invoke endCall()
+            Object telephonyInterface = methodGetITelephony.invoke(telephonyManager); //Invoke 'getITelephony' method onto an object
 
-            methodSilence.invoke(telephonyInterface);
-            methodEndCall.invoke(telephonyInterface);
+            Class telephonyInterfaceClass = Class.forName(telephonyInterface.getClass().getName()); //Get an instance of the ITelephony Class
+            Method silence_ringer = telephonyInterfaceClass.getDeclaredMethod("silenceRinger"); //Get access to  the 'silenceRinger' function
+            Method end_call = telephonyInterfaceClass.getDeclaredMethod("endCall"); //Get access to the 'endCall' function
+
+           silence_ringer.invoke(telephonyInterface); //Invoke 'silenceRinger' so the phone ringer is silenced
+            end_call.invoke(telephonyInterface); //Invoke 'endCall' so the phone call is automatically hung up
             setResultData(null);
-
         }
         catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    //Function used by the "post execute()" of 'BackgroundNumberExist'
+    //Function used by the 'onPostExecute' of 'BackgroundNumberExist'
     public void exist(boolean number){
 
             num_exist = number; //Save query result to a variable
 
         //If the phone is ringing and only numbers/area codes in DB should be blocked
-        if (state.equals(TelephonyManager.EXTRA_STATE_RINGING) && !block_switch) {
+        if (state.equals(TelephonyManager.EXTRA_STATE_RINGING) && !block_all) {
 
             if (num_exist) { //If the incoming number is in the DB or contains an area code in the DB
-                block_call(context); //Call function to block the call
+                blockCall(context); //Call function to block the call
 
                 if (sms) { //If SMS sending has been enabled send the incoming caller a warning text
-                    smsManager.sendTextMessage(incomingNumber, null, "The person you are trying to call would not like to be contacted at this time!", null, null);
+                    smsManager.sendTextMessage(incoming_number, null, "The person you are trying to call would not like to be contacted at this time!", null, null);
                 }
 
                 //Thread sleep required for call log deletion to properly work
@@ -108,10 +99,10 @@ public class CallInterceptor extends BroadcastReceiver {
                         return;
                     }
                     //Delete call log for incoming number
-                    context.getContentResolver().delete(CallLog.Calls.CONTENT_URI, "NUMBER=" + "'" + incomingNumber + "'", null);
+                    context.getContentResolver().delete(CallLog.Calls.CONTENT_URI, "NUMBER=" + "'" + incoming_number + "'", null);
                 }
 
-
+                //Add 1 to the 'tally' shared preference and send broadcast back to HomeFragment
                 blocked_calls_tally = sharedPref.getInt("tally", 0);
                 blocked_calls_tally +=1;
                 editor = sharedPref.edit();
@@ -121,12 +112,12 @@ public class CallInterceptor extends BroadcastReceiver {
             }
         }
 
-        else if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) { //else if phone is ringing
+        else if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) { //Else if phone is ringing
 
-            block_call(context); //call function to block the call
+            blockCall(context); //Call function to block the call
 
             if (sms) { //If SMS sending has been enabled send the incoming caller a warning text
-                smsManager.sendTextMessage(incomingNumber, null, "The person you are trying to call would not like to be contacted at this time!", null, null);
+                smsManager.sendTextMessage(incoming_number, null, "The person you are trying to call would not like to be contacted at this time!", null, null);
             }
 
             //Thread sleep required for call log deletion to properly work
@@ -137,19 +128,18 @@ public class CallInterceptor extends BroadcastReceiver {
             }
 
             if (call_deletion){ //If call log deletion has been enabled delete the call log for the incoming number
-                context.getContentResolver().delete(CallLog.Calls.CONTENT_URI, "NUMBER=" + "'"+ incomingNumber +"'", null);
+                context.getContentResolver().delete(CallLog.Calls.CONTENT_URI, "NUMBER=" + "'"+ incoming_number +"'", null);
             }
 
+            //Add 1 to the 'tally' shared preference and send broadcast back to HomeFragment
             blocked_calls_tally = sharedPref.getInt("tally", 0);
             blocked_calls_tally +=1;
             editor = sharedPref.edit();
             editor.putInt("tally", blocked_calls_tally);
             editor.apply();
 
-            //Send broadcast to Home_Fragment so that the tally of blocked calls is updated
+            //Send broadcast to HomeFragment so that the tally of blocked calls is updated
             context.sendBroadcast(new Intent("com.aa.calldefender.UPDATE_COUNT"));
-
         }
     }
-
 }

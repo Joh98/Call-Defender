@@ -3,18 +3,18 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-//Async task for the deletion of area code
+//Async task for the deletion of area code from the DB
 public class BackgroundDeleteFromAreaCodeTable extends AsyncTask<String,Void, String> {
 
     //Declare variables
     Context ctx;
-    public View_Area_Codes_Fragment viewer;
+    private ViewAreaCodesFragment viewAreaCodesFragment;
 
     //Set contexts
-    BackgroundDeleteFromAreaCodeTable(Context ctx, View_Area_Codes_Fragment vacf)
-    {
+    BackgroundDeleteFromAreaCodeTable(Context ctx, ViewAreaCodesFragment vacf) {
+
         this.ctx = ctx;
-        viewer = vacf;
+        viewAreaCodesFragment = vacf;
     }
 
     @Override
@@ -23,12 +23,12 @@ public class BackgroundDeleteFromAreaCodeTable extends AsyncTask<String,Void, St
     }
 
     @Override
-    protected String doInBackground(String... params) { //background task to be executed
-        DHelper database = new DHelper(ctx);
-        String data = params[0]; //save area code to variable
-        int identifier = Integer.parseInt(params[1]); //save query identifier to variable (parsed from a string)
-        return database.delete_from_db(data, identifier); //run the query and return
+    protected String doInBackground(String... params) { //Background task to be executed
 
+        DHelper database = new DHelper(ctx); //Declare DB instance
+        String area_code = params[0]; //Save area code to variable
+        int identifier = Integer.parseInt(params[1]); //Save query identifier to variable (parsed from a string)
+        return database.deleteFromDb(area_code, identifier); //Run the query and return
     }
 
     @Override
@@ -41,10 +41,8 @@ public class BackgroundDeleteFromAreaCodeTable extends AsyncTask<String,Void, St
 
         Log.d("BackgroundDeleteFromDB", "onPostExecute: " + result); //Debug
 
-        //Call function within 'View_Area_Codes_Fragment' to re-display the area codes to the user
-        viewer.re_display();
-
+        //Call function within 'ViewAreaCodesFragment' to re-display the area codes to the user
+        viewAreaCodesFragment.reDisplay();
     }
-
 }
 

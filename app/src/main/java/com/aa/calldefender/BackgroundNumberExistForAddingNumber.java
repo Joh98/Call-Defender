@@ -8,17 +8,15 @@ public class BackgroundNumberExistForAddingNumber extends AsyncTask<String,Void,
 
     //Declare variables
     Context ctx;
-    private DHelper database;
-    public Add_Fragment viewer;
+    private AddFragment addFragment;
     boolean result = false;
 
     //Set contexts
-    BackgroundNumberExistForAddingNumber(Context ctx, Add_Fragment af)
+    BackgroundNumberExistForAddingNumber(Context ctx, AddFragment af)
     {
         this.ctx = ctx;
-        viewer = af;
+        addFragment = af;
     }
-
 
     @Override
     protected void onPreExecute() {
@@ -26,25 +24,20 @@ public class BackgroundNumberExistForAddingNumber extends AsyncTask<String,Void,
     }
 
     @Override
-    protected Boolean doInBackground(String... params) { //background task to be executed
+    protected Boolean doInBackground(String... params) { //Background task to be executed
 
-        database = new DHelper(ctx); //Create new DB instance
-
+        DHelper database = new DHelper(ctx); //Declare DB instance
         int identifier = Integer.parseInt(params[1]); //Save query identifier to variable (parsed from a string)
 
         //Run query to check if the phone number or area code exists depending on the value of identifier
-        if (identifier == 1)
-        {
-            result = database.num_exist(params[0]);
+        if (identifier == 1) { //1 runs number query
+            result = database.numExist(params[0]);
         }
-
-        else if (identifier == 2)
-        {
-            result = database.area_code_exist(params[0], 1);
+        else if (identifier == 2) { //2 runs area code query
+            result = database.areaCodeExist(params[0], 1);
         }
 
         return result; //Return the query result
-
     }
 
     @Override
@@ -55,9 +48,7 @@ public class BackgroundNumberExistForAddingNumber extends AsyncTask<String,Void,
     @Override
     protected void onPostExecute(Boolean result) { //After task has executed
 
-        //Call function within 'Add_Fragment' that will determine if the number/area code should be added to the DB
-        viewer.num_already_exists(result);
+        //Call function within 'AddFragment' that will determine if the number/area code will be added to the DB
+        addFragment.numAlreadyExists(result);
     }
-
 }
-

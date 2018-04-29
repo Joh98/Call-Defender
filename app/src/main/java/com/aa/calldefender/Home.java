@@ -9,13 +9,14 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-//Class for 2nd activity that contains 3 fragments
+//Class for 2nd activity which is the main 'hub' that contains 3 fragments
 public class Home extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     int frag_id = 1; //set the fragment id to 1
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) { //On activity creation
+    protected void onCreate(Bundle savedInstanceState) { //On creation
+
         super.onCreate(savedInstanceState);
 
         //Set view and navigation bar
@@ -23,27 +24,27 @@ public class Home extends AppCompatActivity implements BottomNavigationView.OnNa
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
 
-        //Determines what fragment should be loaded via saved instances
+        //Determine what fragment should be loaded via saved instances
         if(savedInstanceState != null){
             int frag = savedInstanceState.getInt("Fragment", 1);
 
-            if (frag == 1) {
-                loadFragment(new Home_Fragment());
+            if (frag == 1) { //If 1 HomeFragment
+                loadFragment(new HomeFragment());
                 frag_id = 1;
             }
-            else if (frag == 2) {
-                loadFragment(new Add_Fragment());
+            else if (frag == 2) { //If 2 AddFragment
+                loadFragment(new AddFragment());
                 frag_id = 2;
             }
 
-            else if (frag == 3) {
-                View_Fragment f = new View_Fragment();
+            else if (frag == 3) { //If 3 ViewFragment
+                ViewFragment f = new ViewFragment();
                 loadFragment(f);
                 frag_id = 3;
 
             }
-        } else {
-            loadFragment(new Home_Fragment());
+        } else { //Else load homeFragment if no fragment has been specified
+            loadFragment(new HomeFragment());
         }
     }
 
@@ -68,17 +69,17 @@ public class Home extends AppCompatActivity implements BottomNavigationView.OnNa
 
         switch (item.getItemId()) {
             case R.id.navigation_home:
-                fragment = new Home_Fragment();
+                fragment = new HomeFragment();
                 frag_id = 1;
                 break;
 
             case R.id.navigation_add:
-                fragment = new Add_Fragment();
+                fragment = new AddFragment();
                 frag_id = 2;
                 break;
 
             case R.id.navigation_view:
-                fragment = new View_Fragment();
+                fragment = new ViewFragment();
                 frag_id = 3;
                 break;
         }
@@ -111,6 +112,5 @@ public class Home extends AppCompatActivity implements BottomNavigationView.OnNa
 
         // call superclass to save any view hierarchy
         super.onSaveInstanceState(outState);
-
     }
 }

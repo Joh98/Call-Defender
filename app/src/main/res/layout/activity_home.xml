@@ -27,7 +27,7 @@
     </android.support.design.widget.BottomNavigationView>
 
     <View
-        android:id="@+id/view3"
+        android:id="@+id/seperator"
         android:layout_width="0dp"
         android:layout_height="2dp"
         android:layout_marginBottom="8dp"

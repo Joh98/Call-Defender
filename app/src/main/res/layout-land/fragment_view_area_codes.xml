@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.aa.calldefender.View_Fragment">
+    tools:context="com.aa.calldefender.ViewFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -31,7 +31,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/button_change_data"
             android:layout_width="300dp"
             android:layout_height="50dp"
             android:layout_marginBottom="10dp"
@@ -60,7 +60,7 @@
             app:layout_constraintVertical_bias="0.266" />
 
         <View
-            android:id="@+id/view7"
+            android:id="@+id/button_background"
             android:layout_width="0dp"
             android:layout_height="68dp"
             android:layout_marginBottom="8dp"
@@ -74,7 +74,7 @@
             app:layout_constraintVertical_bias="0.005" />
 
         <View
-            android:id="@+id/view5"
+            android:id="@+id/seperator"
             android:layout_width="0dp"
             android:layout_height="2dp"
             android:layout_marginBottom="8dp"

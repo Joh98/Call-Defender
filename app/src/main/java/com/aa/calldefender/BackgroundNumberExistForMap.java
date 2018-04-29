@@ -2,19 +2,18 @@ package com.aa.calldefender;
 import android.content.Context;
 import android.os.AsyncTask;
 
-//Async task that quires the DB to determine if the number the user has selected has any map info
+//Async task that queries the DB to determine if the number the user has selected has any map info
 public class BackgroundNumberExistForMap extends AsyncTask<String,Void, Boolean> {
 
     //Declare variables
     Context ctx;
-    private DHelper database;
-    public View_Numbers_Fragment viewer;
+    private ViewNumbersFragment viewNumbersFragment;
 
     //Set contexts
-    BackgroundNumberExistForMap(Context ctx, View_Numbers_Fragment vnf)
+    BackgroundNumberExistForMap(Context ctx, ViewNumbersFragment vnf)
     {
         this.ctx = ctx;
-        viewer = vnf;
+        viewNumbersFragment = vnf;
     }
 
     @Override
@@ -23,9 +22,9 @@ public class BackgroundNumberExistForMap extends AsyncTask<String,Void, Boolean>
     }
 
     @Override
-    protected Boolean doInBackground(String... params) { //background task to be executed
-        database = new DHelper(ctx); //Create new DB instance
-        return database.area_code_exist(params[0], 2); //run and return result of the query
+    protected Boolean doInBackground(String... params) { //Background task to be executed
+        DHelper database = new DHelper(ctx); //Declare DB instance
+        return database.areaCodeExist(params[0], 2); //Run and return result of the query
     }
 
     @Override
@@ -35,9 +34,8 @@ public class BackgroundNumberExistForMap extends AsyncTask<String,Void, Boolean>
 
     @Override
     protected void onPostExecute(Boolean result) { //After task has executed
-        //Call function within 'View_Numbers_Fragment' that will determine if the map activity should start
-        viewer.query_result(result);
+
+        //Call function within 'ViewNumbersFragment' that will determine if the map activity should start
+        viewNumbersFragment.queryResult(result);
     }
-
 }
-

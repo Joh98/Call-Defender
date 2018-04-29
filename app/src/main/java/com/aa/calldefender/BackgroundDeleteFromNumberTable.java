@@ -3,20 +3,19 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-//Async task for the deletion of a phone number
+//Async task for the deletion of a phone number from the DB
 public class BackgroundDeleteFromNumberTable extends AsyncTask<String,Void, String> {
 
     //Declare variables
     Context ctx;
-    public View_Numbers_Fragment viewer;
+    private ViewNumbersFragment viewNumbersFragment;
 
     //Set contexts
-    BackgroundDeleteFromNumberTable(Context ctx, View_Numbers_Fragment vnf)
-    {
-        this.ctx = ctx;
-        viewer = vnf;
-    }
+    BackgroundDeleteFromNumberTable(Context ctx, ViewNumbersFragment vnf) {
 
+        this.ctx = ctx;
+        viewNumbersFragment = vnf;
+    }
 
     @Override
     protected void onPreExecute() {
@@ -24,12 +23,12 @@ public class BackgroundDeleteFromNumberTable extends AsyncTask<String,Void, Stri
     }
 
     @Override
-    protected String doInBackground(String... params) { //background task to be executed
-        DHelper database = new DHelper(ctx);
-        String data = params[0]; //save phone number to variable
-        int identifier = Integer.parseInt(params[1]); //save query identifier to variable (parsed from a string)
-        return database.delete_from_db(data, identifier); //run the query and return
+    protected String doInBackground(String... params) { //Background task to be executed
 
+        DHelper database = new DHelper(ctx); //Declare DB instance
+        String phone_number = params[0]; //Save phone number to variable
+        int identifier = Integer.parseInt(params[1]); //Save query identifier to variable (parsed from a string)
+        return database.deleteFromDb(phone_number, identifier); //Run the query and return
     }
 
     @Override
@@ -41,8 +40,9 @@ public class BackgroundDeleteFromNumberTable extends AsyncTask<String,Void, Stri
     protected void onPostExecute(String result) { //After task has executed
 
         Log.d("BackgroundDeleteFromDB", "onPostExecute: " + result); //Debug
-        //Call function within 'View_Numbers_Fragment' to re-display the phone numbers to the user
-        viewer.re_display();
+
+        //Call function within 'ViewNumbersFragment' to re-display the phone numbers to the user
+        viewNumbersFragment.reDisplay();
 
     }
 
