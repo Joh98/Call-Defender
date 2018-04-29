@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.aa.calldefender.MainActivity"
+    tools:context="com.aa.calldefender.MainMenuActivity"
     tools:layout_editor_absoluteY="25dp">
 
     <ImageView
-        android:id="@+id/imageView5"
+        android:id="@+id/logo"
         android:layout_width="288dp"
         android:layout_height="215dp"
         android:layout_alignParentEnd="true"
@@ -22,7 +22,7 @@
         tools:layout_editor_absoluteX="5dp" />
 
     <Button
-        android:id="@+id/button_instructions"
+        android:id="@+id/button_settings"
         style="@android:style/Widget.Material.Light.Button.Small"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
@@ -48,9 +48,7 @@
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_above="@+id/button_exit"
-        android:layout_alignEnd="@+id/button_start"
         android:layout_alignParentEnd="false"
-        android:layout_alignStart="@+id/button_start"
         android:layout_marginBottom="30dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -68,9 +66,9 @@
         style="@android:style/Widget.DeviceDefault.Light.Button.Small"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/button_instructions"
+        android:layout_alignEnd="@+id/button_settings"
         android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/button_instructions"
+        android:layout_alignStart="@+id/button_settings"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"

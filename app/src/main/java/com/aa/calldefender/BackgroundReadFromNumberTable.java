@@ -8,14 +8,13 @@ public class BackgroundReadFromNumberTable extends AsyncTask<String,Void, Cursor
 
     //Declare variables
     Context ctx;
-    private DHelper database;
-    public View_Numbers_Fragment viewer;
+    private ViewNumbersFragment viewNumbersFragment;
 
     //Set contexts
-    BackgroundReadFromNumberTable(Context ctx, View_Numbers_Fragment vnf)
+    BackgroundReadFromNumberTable(Context ctx, ViewNumbersFragment vnf)
     {
         this.ctx = ctx;
-        viewer = vnf;
+        viewNumbersFragment = vnf;
     }
 
     @Override
@@ -24,10 +23,11 @@ public class BackgroundReadFromNumberTable extends AsyncTask<String,Void, Cursor
     }
 
     @Override
-    protected Cursor doInBackground(String... params) { //background task to be executed
-        database = new DHelper(ctx); //Create new DB instance
-        int identifier = Integer.parseInt(params[0]); //save query identifier to variable (parsed from a string)
-        return database.getData(identifier); //run and return result of the query
+    protected Cursor doInBackground(String... params) { //Background task to be executed
+        DHelper database = new DHelper(ctx); //Declare DB instance
+        int identifier = Integer.parseInt(params[0]); //Save query identifier to variable (parsed from a string)
+        Cursor data = database.getData(identifier); //Run and return result of the query
+        return data;
     }
 
     @Override
@@ -38,8 +38,8 @@ public class BackgroundReadFromNumberTable extends AsyncTask<String,Void, Cursor
     @Override
     protected void onPostExecute(Cursor result) { //After task has executed
 
-        //Call function within 'View_Numbers_Fragment' so query data can be passed back and used
-        viewer.show_data(result);
+        //Call function within 'ViewNumbersFragment' so query data can be passed back and used
+        viewNumbersFragment.showData(result);
 
     }
 

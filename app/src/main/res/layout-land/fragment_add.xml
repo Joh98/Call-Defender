@@ -3,14 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.aa.calldefender.Add_Fragment">
+    tools:context="com.aa.calldefender.AddFragment">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <android.support.v7.widget.CardView
-            android:id="@+id/card_1"
+            android:id="@+id/number_card_button"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -33,7 +33,7 @@
                 tools:layout_editor_absoluteY="89dp">
 
                 <TextView
-                    android:id="@+id/person_name1"
+                    android:id="@+id/number_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
@@ -42,10 +42,10 @@
                     android:textSize="30sp" />
 
                 <ImageView
-                    android:id="@+id/imageView4"
+                    android:id="@+id/hash"
                     android:layout_width="40dp"
                     android:layout_height="100dp"
-                    android:layout_alignBottom="@+id/person_name1"
+                    android:layout_alignBottom="@+id/number_text"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="32dp"
                     android:src="@drawable/hash"
@@ -57,7 +57,7 @@
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
-            android:id="@+id/card_2"
+            android:id="@+id/area_card_button"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -80,7 +80,7 @@
                 tools:layout_editor_absoluteY="0dp">
 
                 <TextView
-                    android:id="@+id/person_name1"
+                    android:id="@+id/area_code_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
@@ -89,12 +89,12 @@
                     android:textSize="30sp" />
 
                 <ImageView
-                    android:id="@+id/imageView"
+                    android:id="@+id/map_pin"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="31dp"
-                    android:layout_toEndOf="@+id/person_name1"
+                    android:layout_marginStart="26dp"
+                    android:layout_toEndOf="@+id/area_code_text"
                     android:src="@drawable/pin"
                     tools:layout_editor_absoluteX="272dp"
                     tools:layout_editor_absoluteY="272dp" />

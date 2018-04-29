@@ -7,13 +7,11 @@ public class BackgroundInsert extends AsyncTask<String,Void, Void> {
 
     //Declare variables
     Context ctx;
-    private DHelper database;
 
     //Set context
     BackgroundInsert(Context ctx)
     {
         this.ctx = ctx;
-
     }
 
     @Override
@@ -22,10 +20,10 @@ public class BackgroundInsert extends AsyncTask<String,Void, Void> {
     }
 
     @Override
-    protected Void doInBackground(String... params) { //background task to be executed
-        database = new DHelper(ctx); //create new DB instance
+    protected Void doInBackground(String... params) { //Background task to be executed
+        DHelper database = new DHelper(ctx); //Declare DB instance
         int identifier = Integer.parseInt(params[1]); //save query identifier to variable (parsed from a string)
-        database.insert_to_db(params[0], identifier); //run query
+        database.insertToDb(params[0], identifier); //run query where params[0] is the phone number/area code
         return null;
     }
 
@@ -33,7 +31,5 @@ public class BackgroundInsert extends AsyncTask<String,Void, Void> {
     protected void onProgressUpdate(Void... values) {
         super.onProgressUpdate(values);
     }
-
-
 }
 

@@ -7,16 +7,13 @@ public class BackgroundNumberExist extends AsyncTask<String,Void, Boolean> {
 
     //Declare variables
     Context ctx;
-    private DHelper database;
-    public CallInterceptor viewer;
-
+    private CallInterceptor callInterceptor;
 
     //Set contexts
     BackgroundNumberExist(Context ctx, CallInterceptor ci)
     {
         this.ctx = ctx;
-        viewer = ci;
-
+        callInterceptor = ci;
     }
 
     @Override
@@ -25,14 +22,13 @@ public class BackgroundNumberExist extends AsyncTask<String,Void, Boolean> {
     }
 
     @Override
-    protected Boolean doInBackground(String... params) { //background task to be executed
+    protected Boolean doInBackground(String... params) { //Background task to be executed
 
-        database = new DHelper(ctx); //create new DB instance
-        boolean a = database.num_exist(params[0]); //run query to determine if incoming number should be blocked
-        boolean b = database.area_code_exist(params[0], 1);  //run query to determine is incoming number contains a blocked are code
+        DHelper database = new DHelper(ctx); //Declare DB instance
+        boolean a = database.numExist(params[0]); //Run query to determine if incoming number should be blocked
+        boolean b = database.areaCodeExist(params[0], 1);  //Run query to determine is incoming number contains a blocked area code
 
-        return a || b; //return
-
+        return a || b; //Return
     }
 
     @Override
@@ -44,8 +40,6 @@ public class BackgroundNumberExist extends AsyncTask<String,Void, Boolean> {
     protected void onPostExecute(Boolean result) { //After task has executed
 
         //Call function within 'CallInterceptor' stating whether the incoming call should be blocked
-        viewer.exist(result);
+        callInterceptor.exist(result);
     }
-
 }
-

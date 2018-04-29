@@ -13,6 +13,7 @@
         android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/sms_title"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight=".3"
@@ -21,6 +22,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat" />
 
         <TextView
+            android:id="@+id/sms_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".8"
@@ -36,6 +38,7 @@
         android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/call_del_title"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight=".3"
@@ -43,6 +46,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat" />
 
         <TextView
+            android:id="@+id/call_del_descrpition"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".8"
